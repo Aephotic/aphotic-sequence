@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aphotic Sequence</title>
+  <meta name="description" content="A sigil generator for the Aphotic Sequence: write an intent, get a sigil drawn from its letters.">
+  <meta name="theme-color" content="#0e0c0b">
+  <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aphotic">
+</head>
+<body>
+  <div class="fx" aria-hidden="true"><i class="fx-glow"></i><i class="fx-scratch"></i><i class="fx-vignette"></i><i class="fx-grain"></i></div>
+
+  <header class="bar">
+    <button id="back" class="icon-btn" type="button" aria-label="Back" hidden></button>
+    <div class="brand" id="brand"><span id="brandMark"></span><span class="brand-name" data-text="Aphotic Sequence">Aphotic Sequence</span></div>
+    <button id="menuBtn" class="icon-btn" type="button" aria-label="Menu" aria-haspopup="dialog"></button>
+  </header>
+
+  <main id="app">
+    <!-- compose -->
+    <section class="screen on" id="scr-compose" aria-labelledby="h-compose">
+      <h1 class="display" id="h-compose">Write the <em>intent</em>.</h1>
+      <label class="field">
+        <span class="lab">Intent</span>
+        <textarea id="intent" rows="2" maxlength="160" autocomplete="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="go" placeholder="I am safe"></textarea>
+      </label>
+      <div id="readout" class="readout" aria-live="polite"></div>
+      <div class="field" id="emphField" hidden>
+        <span class="lab">Emphasize a word <i>optional</i></span>
+        <div id="emph" class="chips" role="radiogroup" aria-label="Emphasize a word"></div>
+      </div>
+      <div class="bind-slot">
+        <div class="field" id="bindField">
+          <span class="lab" id="bindLab">Binding</span>
+          <div class="dd" id="bindDD"></div>
+        </div>
+      </div>
+      <div class="adv-slot"></div>
+      <div class="cta"><button id="gen" class="btn primary" type="button">Generate</button></div>
+    </section>
+
+    <!-- results -->
+    <section class="screen" id="scr-results" aria-labelledby="h-results">
+      <p class="eyebrow">Six variants</p>
+      <h1 class="intent-title" id="h-results"></h1>
+      <div id="carousel" class="carousel" tabindex="0" aria-label="Variants. Swipe, then tap one to open it."></div>
+      <div id="dots" class="dots" aria-hidden="true"></div>
+      <p id="resStatus" class="status" aria-live="polite"></p>
+      <div class="cta two">
+        <button id="regen" class="btn" type="button">Regenerate</button>
+        <button id="openSel" class="btn primary" type="button">Open</button>
+      </div>
+    </section>
+
+    <!-- final -->
+    <section class="screen" id="scr-final" aria-labelledby="h-final">
+      <p class="eyebrow">Final</p>
+      <h1 class="intent-title" id="h-final"></h1>
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <i class="st-plate"></i><i class="st-bloom"></i>
+          <svg id="sigil" class="st-sigil" viewBox="-300 -300 600 600" role="img" aria-label="The sigil"></svg>
+          <i class="st-frame"></i>
+          <span class="st-tag tl" id="tagTL"></span><span class="st-tag br" id="tagBR"></span>
+        </div>
+        <button id="replay" class="icon-btn stage-btn" type="button" aria-label="Draw it again"></button>
+      </div>
+      <div class="actions">
+        <button id="aShare" class="act" type="button"></button>
+        <button id="aSave" class="act" type="button"></button>
+        <button id="aExport" class="act" type="button"></button>
+      </div>
+      <p id="finMsg" class="status" aria-live="polite"></p>
+      <button id="howBtn" class="btn wide" type="button"></button>
+      <div class="bind-slot"></div>
+      <div class="adv-slot"></div>
+    </section>
+
+    <!-- how it was made -->
+    <section class="screen" id="scr-how" aria-labelledby="h-how">
+      <p class="eyebrow">How it was made</p>
+      <h1 class="intent-title" id="h-how"></h1>
+      <div id="walk" class="carousel walk" tabindex="0" aria-label="Walkthrough. Swipe through the four steps."></div>
+      <div id="walkDots" class="dots" aria-hidden="true"></div>
+    </section>
+
+    <!-- saved -->
+    <section class="screen" id="scr-saved" aria-labelledby="h-saved">
+      <p class="eyebrow">On this device</p>
+      <h1 class="display small" id="h-saved">Saved sigils</h1>
+      <p class="note">Only the intent, settings and seed are kept, in this browser. Each sigil is rebuilt from them.</p>
+      <div id="savedGrid" class="grid"></div>
+      <p id="savedEmpty" class="empty" hidden>Nothing saved yet. Open a sigil and tap Save.</p>
+    </section>
+
+    <!-- about -->
+    <section class="screen" id="scr-about" aria-labelledby="h-about">
+      <p class="eyebrow">About</p>
+      <h1 class="display small" id="h-about">How it works</h1>
+      <div class="prose">
+        <p>The Aphotic Sequence is a sigil method by <b>Aphotic</b>. This app follows it.</p>
+        <ol class="steps">
+          <li><b>Write the intent out in full.</b> Numbers are written as words. Punctuation is ignored. X and Z are left out.</li>
+          <li><b>Every unique letter becomes one line</b> at the angle the template gives it. The template only supplies angles; the sigil is not drawn on it.</li>
+          <li><b>The first letter is the core</b> and is drawn longest. Longer means emphasis.</li>
+          <li><b>A repeated letter adds a mark</b> to its line (a dot, a circle, a bar or a doubled line). It never adds a second line.</li>
+          <li><b>The shape comes by feel and re-drawing.</b> Here that means about 600 attempts per run. Hashtag shapes are thrown out, closed compartments are avoided, and six of the best are shown.</li>
+        </ol>
+        <p>Every run is different. Each result keeps the seed it was made from, so a saved sigil or a shared link brings back exactly the same one.</p>
+        <p>Nothing you type leaves this device. There is no account, no server and no tracking. A share link carries the intent text inside the link itself, so anyone you send it to can read it.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- advanced: one panel, moved into whichever screen is showing -->
+  <details class="adv" id="adv">
+    <summary><span>Advanced</span></summary>
+    <div class="adv-body">
+      <div class="field"><span class="lab">Repeat marks</span><div id="repeat" class="seg" role="radiogroup" aria-label="Repeat marks"></div></div>
+      <div class="field"><span class="lab">Start mark</span><div id="tStart" class="seg" role="radiogroup" aria-label="Start mark"></div></div>
+      <div class="field"><span class="lab">End mark</span><div id="tEnd" class="seg" role="radiogroup" aria-label="End mark"></div></div>
+      <div class="field">
+        <span class="lab">Rotation <output id="rotOut">0°</output></span>
+        <input id="rot" class="range" type="range" min="-180" max="180" step="5" value="0" aria-label="Rotation">
+        <div id="rot8" class="rot8" role="group" aria-label="Eight rotations"></div>
+      </div>
+      <div class="field"><span class="lab">Line weight</span><div id="weight" class="seg" role="radiogroup" aria-label="Line weight"></div></div>
+      <div class="field">
+        <span class="lab">Mirror and layers</span>
+        <div class="switches">
+          <button class="switch" type="button" role="switch" id="mirror">Mirror</button>
+          <button class="switch" type="button" role="switch" data-bit="1">Binding</button>
+          <button class="switch" type="button" role="switch" data-bit="2">Lines</button>
+          <button class="switch" type="button" role="switch" data-bit="4">Marks</button>
+          <button class="switch" type="button" role="switch" data-bit="8">Letter labels</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="lab">Angle table</span>
+        <div id="table" class="seg" role="radiogroup" aria-label="Angle table"></div>
+        <p class="note" id="tableNote">Re-tuned gives all 24 letters their own line. Changing the table or a mark style makes a new set, so marks never land on another line.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- bottom sheet: menu, share, export -->
+  <div class="sheet-back" id="sheetBack" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
+      <div class="sheet-head"><h2 id="sheetTitle"></h2><button id="sheetClose" class="icon-btn" type="button" aria-label="Close"></button></div>
+      <div id="sheetBody"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
